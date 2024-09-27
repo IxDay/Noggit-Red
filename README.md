@@ -1,6 +1,6 @@
 # LICENSE #
 This software is open source software licensed under GPL3, as found in
-the COPYING file.
+the COPYING file..
 
 # BUILDING #
 This project requires CMake to be built. 
