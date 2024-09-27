@@ -33,8 +33,10 @@ jobs:
     - name: "dependency: boost (windows)"
       run: |
         $Url = "https://sourceforge.net/projects/boost/files/boost-binaries/1.72.0/boost_1_72_0-msvc-14.2-64.exe"
-        (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\hostedtoolcache\windows\Boost\1.72.0\x86_64"
+        $OutputPath = "$env:TEMP\boost.exe"
+        $headers = @{ "User-Agent" = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3" }
+        Invoke-WebRequest -Uri $Url -OutFile $OutputPath -Headers $headers
+        Start-Process -Wait -FilePath $OutputPath -ArgumentList "/SILENT", "/SP-", "/SUPPRESSMSGBOXES", "/DIR=C:\hostedtoolcache\windows\Boost\1.72.0\x86_64"
       if: ${{ matrix.platform == 'windows-2019' }}
     - name: "dependency: boost (windows) - env variable"
       run: echo "BOOST_ROOT=C:\hostedtoolcache\windows\Boost\1.72.0\x86_64" >> $GITHUB_ENV
