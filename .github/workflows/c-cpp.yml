@@ -1,23 +1,37 @@
-name: C/C++ CI
+name: Build and Release
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    tags:
+      - 'v*.*.*'  # Triggers on version tags, e.g., v1.0.0
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up C++ build environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libgl1-mesa-dev libglu1-mesa-dev \
+                                  qt5-default liblua5.3-dev  # Add other required libraries here
+
+      - name: Build the project
+        run: |
+          mkdir build
+          cd build
+          cmake ..  # CMake will handle fetching dependencies
+          make
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag: ${{ github.ref }}
+          files: build/your-built-binary  # Change this to your actual output file(s)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
