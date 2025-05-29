@@ -7,21 +7,22 @@ jobs:
     runs-on: windows-2019
     name: build and release
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+      with:
+          submodules: recursive
 
     - name: "dependency: boost"
       run: |
-        $Url = "https://sourceforge.net/projects/boost/files/boost-binaries/1.72.0/boost_1_72_0-msvc-14.2-64.exe"
+        $Url = "https://github.com/T0rt4nk/lib-boost/releases/download/0.1.0/boost_1_72_0-msvc-14.2-64.exe"
         $OutputPath = "$env:TEMP\boost.exe"
-        $headers = @{ "User-Agent" = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3" }
-        Invoke-WebRequest -Uri $Url -OutFile $OutputPath -Headers $headers
+        Invoke-WebRequest -Uri $Url -OutFile $OutputPath
         Start-Process -Wait -FilePath $OutputPath -ArgumentList "/SILENT", "/SP-", "/SUPPRESSMSGBOXES", "/DIR=C:\hostedtoolcache\windows\Boost\1.72.0\x86_64"
     - name: "dependency: boost - env variable"
       run: echo "BOOST_ROOT=C:\hostedtoolcache\windows\Boost\1.72.0\x86_64" >> $GITHUB_ENV
       shell: bash
 
     - name: "dependency: qt5 (windows)"
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v4
       with:
         version: 5.15.1
         arch: win64_msvc2019_64
