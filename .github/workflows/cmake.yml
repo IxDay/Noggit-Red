@@ -11,15 +11,15 @@ jobs:
       with:
           submodules: recursive
 
-    - name: "dependency: boost"
-      run: |
-        $Url = "https://github.com/T0rt4nk/lib-boost/releases/download/0.1.0/boost_1_72_0-msvc-14.2-64.exe"
-        $OutputPath = "$env:TEMP\boost.exe"
-        Invoke-WebRequest -Uri $Url -OutFile $OutputPath
-        Start-Process -Wait -FilePath $OutputPath -ArgumentList "/SILENT", "/SP-", "/SUPPRESSMSGBOXES", "/DIR=C:\hostedtoolcache\windows\Boost\1.72.0\x86_64"
-    - name: "dependency: boost - env variable"
-      run: echo "BOOST_ROOT=C:\hostedtoolcache\windows\Boost\1.72.0\x86_64" >> $GITHUB_ENV
-      shell: bash
+    # - name: "dependency: boost"
+    #   run: |
+    #     $Url = "https://github.com/T0rt4nk/lib-boost/releases/download/0.1.0/boost_1_72_0-msvc-14.2-64.exe"
+    #     $OutputPath = "$env:TEMP\boost.exe"
+    #     Invoke-WebRequest -Uri $Url -OutFile $OutputPath
+    #     Start-Process -Wait -FilePath $OutputPath -ArgumentList "/SILENT", "/SP-", "/SUPPRESSMSGBOXES", "/DIR=C:\hostedtoolcache\windows\Boost\1.72.0\x86_64"
+    # - name: "dependency: boost - env variable"
+    #   run: echo "BOOST_ROOT=C:\hostedtoolcache\windows\Boost\1.72.0\x86_64" >> $GITHUB_ENV
+    #   shell: bash
 
     - name: "dependency: qt5 (windows)"
       uses: jurplel/install-qt-action@v4
@@ -27,12 +27,12 @@ jobs:
         version: 5.15.1
         arch: win64_msvc2019_64
 
-    - name: "dependency: stormlib"
-      run: |
-        git clone "https://github.com/ladislav-zezula/StormLib" "${{ runner.workspace }}/stormlib"
-        cmake -B "${{ runner.workspace }}/stormlib/build" -S "${{ runner.workspace }}/stormlib" -DCMAKE_CXX_COMPILER=msvc2019 -DCMAKE_C_COMPILER=msvc2019 -DCMAKE_INSTALL_PREFIX="${{ runner.workspace }}/stormlib/install" -DCMAKE_BUILD_TYPE=RelWithDebInfo
-        cmake --build "${{ runner.workspace }}/stormlib/build" --config RelWithDebInfo
-        cmake --install "${{ runner.workspace }}/stormlib/build" --config RelWithDebInfo
+    # - name: "dependency: stormlib"
+    #   run: |
+    #     git clone "https://github.com/ladislav-zezula/StormLib" "${{ runner.workspace }}/stormlib"
+    #     cmake -B "${{ runner.workspace }}/stormlib/build" -S "${{ runner.workspace }}/stormlib" -DCMAKE_CXX_COMPILER=msvc2019 -DCMAKE_C_COMPILER=msvc2019 -DCMAKE_INSTALL_PREFIX="${{ runner.workspace }}/stormlib/install" -DCMAKE_BUILD_TYPE=RelWithDebInfo
+    #     cmake --build "${{ runner.workspace }}/stormlib/build" --config RelWithDebInfo
+    #     cmake --install "${{ runner.workspace }}/stormlib/build" --config RelWithDebInfo
 
     - name: "configure"
       run: cmake -Wdev -Wdeprecated --warn-uninitialized -B "${{ github.workspace }}/build" -S "${{ github.workspace }}" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_COMPILER=msvc2019 -DCMAKE_PREFIX_PATH="${{ runner.workspace }}/stormlib/install"
